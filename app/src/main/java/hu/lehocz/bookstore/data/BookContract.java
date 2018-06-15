@@ -8,55 +8,57 @@ public class BookContract {
     private BookContract() {}
 
     /**
-     * Inner class that defines constant values for the pets database table.
-     * Each entry in the table represents a single pet.
+     * Inner class that defines constant values for the books database table.
+     * Each entry in the table represents a single book.
      */
     public static final class BookEntry implements BaseColumns {
 
-        /** Name of database table for pets */
-        public final static String TABLE_NAME = "books";
+        private BookEntry(){}
+
+        /** Name of database table for books */
+        public static final String TABLE_NAME = "books";
 
         /**
-         * Unique ID number for the pet (only for use in the database table).
+         * Unique ID number for the book (only for use in the database table).
          *
          * Type: INTEGER
          */
-        public final static String _ID = BaseColumns._ID;
+        public static final String _ID = BaseColumns._ID;
 
         /**
          * Name of the product.
          *
          * Type: TEXT
          */
-        public final static String COLUMN_PRODUCT_NAME ="product_name";
+        public static final String COLUMN_PRODUCT_NAME ="product_name";
 
         /**
          * Price of the product.
          *
          * Type: INTEGER
          */
-        public final static String COLUMN_PRICE= "product_price";
+        public static final String COLUMN_PRICE= "product_price";
 
         /**
          * Qunatity of the product.
          *
          * Type: INTEGER
          */
-        public final static String COLUMN_QUANTITY= "product_quantity";
+        public static final String COLUMN_QUANTITY= "product_quantity";
 
         /**
          * Name of the supplier.
          *
          * Type: TEXT
          */
-        public final static String COLUMN_SUPPLIER_NAME ="supplier_name";
+        public static final String COLUMN_SUPPLIER_NAME ="supplier_name";
 
         /**
          * Phone number of the supplier.
          *
          * Type: TEXT
          */
-        public final static String COLUMN_SUPPLIER_PHONE_NUMBER ="supplier_phone";
+        public static final String COLUMN_SUPPLIER_PHONE_NUMBER ="supplier_phone";
 
 
     }

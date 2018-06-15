@@ -3,7 +3,22 @@
   <component name="issues">
     <option name="index">
       <map>
-        <entry key="/fragment.java">
+        <entry key="/Dummy.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/CatalogActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/hu/lehocz/bookstore/CatalogActivity.java">
           <value>
             <set />
           </value>
@@ -13,12 +28,17 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/hu/lehocz/bookstore/data/BookDBHelper.java">
+        <entry key="$PROJECT_DIR$/app/src/main/java/hu/lehocz/bookstore/data/BookDbHelper.java">
           <value>
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/hu/lehocz/bookstore/data/BookDbHelper.java">
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_catalog.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/strings.xml">
           <value>
             <set />
           </value>
