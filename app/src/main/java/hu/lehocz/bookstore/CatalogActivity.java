@@ -47,7 +47,7 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        insertData();
+        //insertData();
         queryData();
     }
 
@@ -64,7 +64,7 @@ public class CatalogActivity extends AppCompatActivity {
         // you will actually use after this query.
         String[] projection = {
                 BookEntry._ID,
-                BookEntry.COLUMN_PRODUCT_NAME,
+                BookEntry.COLUMN_NAME,
                 BookEntry.COLUMN_PRICE,
                 BookEntry.COLUMN_QUANTITY,
                 BookEntry.COLUMN_SUPPLIER_NAME,
@@ -93,7 +93,7 @@ public class CatalogActivity extends AppCompatActivity {
             summary=getString(R.string.book_table_contains) + cursor.getCount() + getString(R.string._books_n_n);
             displayView.setText(summary);
             displayView.append(BookEntry._ID + " - " +
-                    BookEntry.COLUMN_PRODUCT_NAME + " - " +
+                    BookEntry.COLUMN_NAME + " - " +
                     BookEntry.COLUMN_PRICE + " - " +
                     BookEntry.COLUMN_QUANTITY + " - " +
                     BookEntry.COLUMN_SUPPLIER_NAME +
@@ -101,7 +101,7 @@ public class CatalogActivity extends AppCompatActivity {
 
             // Figure out the index of each column
             int idColumnIndex = cursor.getColumnIndex(BookEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRODUCT_NAME);
+            int nameColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_NAME);
             int priceColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRICE);
             int quantityColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_QUANTITY);
             int supplierNameColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_NAME);
@@ -142,7 +142,7 @@ public class CatalogActivity extends AppCompatActivity {
         // Create a ContentValues object where column names are the keys,
         // and Toto's book attributes are the values.
         ContentValues values = new ContentValues();
-        values.put(BookEntry.COLUMN_PRODUCT_NAME, "Star Wars");
+        values.put(BookEntry.COLUMN_NAME, "Star Wars");
         values.put(BookEntry.COLUMN_PRICE, 10);
         values.put(BookEntry.COLUMN_QUANTITY, 5);
         values.put(BookEntry.COLUMN_SUPPLIER_NAME, "Del Rey");

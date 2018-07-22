@@ -2,4 +2,26 @@
     <string name="app_name">Book Store</string>
     <string name="book_table_contains">The books table contains</string>
     <string name="_books_n_n">books.</string>
+    <string name="editor_activity_title_new_book">New book</string>
+    <string name="editor_activity_title_edit_book">Edit book</string>
+    <string name="category_overview">Category Overview</string>
+    <string name="hint_name">Hint name</string>
+    <string name="hint_price">Hint Price</string>
+    <string name="category_measurement">Category Measurement</string>
+    <string name="hint_quantity">hint quantity</string>
+    <string name="editor_insert_book_failed">Inserting book failed</string>
+    <string name="editor_insert_book_successful">Insert book successful</string>
+    <string name="editor_update_book_failed">Update book failed</string>
+    <string name="editor_update_book_successful">Update book successful</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_delete_all_entries">Delete all entries</string>
+    <string name="unsaved_changes_dialog_msg">Unsaved changes</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="delete_dialog_msg">Delete dialog msg</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="editor_delete_book_failed">Delete book failed</string>
+    <string name="editor_delete_book_successful">Delete book successful</string>
 </resources>

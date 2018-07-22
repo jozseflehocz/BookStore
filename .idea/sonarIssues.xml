@@ -3,22 +3,7 @@
   <component name="issues">
     <option name="index">
       <map>
-        <entry key="/Dummy.txt">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/CatalogActivity.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/hu/lehocz/bookstore/CatalogActivity.java">
+        <entry key="$PROJECT_DIR$/app/src/main/java/hu/lehocz/bookstore/EditorActivity.java">
           <value>
             <set />
           </value>
@@ -28,17 +13,22 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/hu/lehocz/bookstore/data/BookDbHelper.java">
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_edit.xml">
           <value>
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_catalog.xml">
+        <entry key="$PROJECT_DIR$/app/src/main/res/menu/menu_catalog.xml">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/styles.xml">
           <value>
             <set />
           </value>
