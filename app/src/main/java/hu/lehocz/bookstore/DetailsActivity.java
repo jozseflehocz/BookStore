@@ -17,7 +17,7 @@ package hu.lehocz.bookstore;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.ContentValues;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,12 +27,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,7 +110,7 @@ public class DetailsActivity extends AppCompatActivity implements
     /**
      * This method is called after invalidateOptionsMenu(), so that the
      * menu can be updated (some menu items can be hidden or made visible).
-     * 
+     *
      */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -127,11 +123,19 @@ public class DetailsActivity extends AppCompatActivity implements
         return true;
     }
 
+    public void editBook(){
+        Intent intent=new Intent(DetailsActivity.this,EditorActivity.class);
+        intent.setData(mCurrentBookUri);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
-
+            case R.id.action_edit:
+                editBook();
+                return true;
             case R.id.action_delete:
                 // Pop up confirmation dialog for deletion
                 showDeleteConfirmationDialog();
@@ -232,7 +236,7 @@ public class DetailsActivity extends AppCompatActivity implements
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Delete" button, so delete the pet.
-                deletePet();
+                deleteBook();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -253,7 +257,7 @@ public class DetailsActivity extends AppCompatActivity implements
     /**
      * Perform the deletion of the pet in the database.
      */
-    private void deletePet() {
+    private void deleteBook() {
         // Only perform the delete if this is an existing pet.
         if (mCurrentBookUri != null) {
             // Call the ContentResolver to delete the pet at the given content URI.
