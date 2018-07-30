@@ -24,4 +24,16 @@
     <string name="cancel">Cancel</string>
     <string name="editor_delete_book_failed">Delete book failed</string>
     <string name="editor_delete_book_successful">Delete book successful</string>
+    <string name="unknown_book">Unknown book</string>
+    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+    <string name="details_activity_book_details">Book Details</string>
+    <string name="title">Title</string>
+    <string name="price">Price</string>
+    <string name="quantity">Quantity</string>
+    <string name="supplier_name">Supplier Name</string>
+    <string name="supplier_phone">Supplier Phone</string>
+    <string name="sale">Sale</string>
+    <string name="out_of_stock">Out of stock</string>
+    <string name="edit_button">Edit</string>
+    <string name="action_edit">Edit</string>
 </resources>

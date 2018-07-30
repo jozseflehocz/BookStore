@@ -43,28 +43,44 @@ import hu.lehocz.bookstore.data.BookContract;
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    /** Identifier for the book data loader */
+    /**
+     * Identifier for the book data loader
+     */
     private static final int EXISTING_BOOK_LOADER = 0;
 
-    /** Content URI for the existing book (null if it's a new book) */
+    /**
+     * Content URI for the existing book (null if it's a new book)
+     */
     private Uri mCurrentBookUri;
 
-    /** EditText field to enter the book name */
+    /**
+     * EditText field to enter the book name
+     */
     private EditText mNameEditText;
 
-    /** EditText field to enter the book price */
+    /**
+     * EditText field to enter the book price
+     */
     private EditText mPriceEditText;
 
-    /** EditText field to enter the book quantity */
+    /**
+     * EditText field to enter the book quantity
+     */
     private EditText mQuantityEditText;
 
-    /** EditText field to enter the supplier name */
+    /**
+     * EditText field to enter the supplier name
+     */
     private EditText mSupplierNameEditText;
 
-    /** EditText field to enter the supplier phone number */
+    /**
+     * EditText field to enter the supplier phone number
+     */
     private EditText mSupplierPhoneNumberEditText;
 
-    /** Boolean flag that keeps track of whether the book has been edited (true) or not (false) */
+    /**
+     * Boolean flag that keeps track of whether the book has been edited (true) or not (false)
+     */
     private boolean mBookHasChanged = false;
 
     /**
@@ -85,24 +101,24 @@ public class EditorActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_edit);
 
         // Examine the intent that was used to launch this activity,
-        // in order to figure out if we're creating a new pet or editing an existing one.
+        // in order to figure out if we're creating a new book or editing an existing one.
         Intent intent = getIntent();
         mCurrentBookUri = intent.getData();
 
-        // If the intent DOES NOT contain a pet content URI, then we know that we are
-        // creating a new pet.
+        // If the intent DOES NOT contain a book content URI, then we know that we are
+        // creating a new book.
         if (mCurrentBookUri == null) {
-            // This is a new pet, so change the app bar to say "Add a Pet"
+            // This is a new book, so change the app bar to say "Add a Pet"
             setTitle(getString(R.string.editor_activity_title_new_book));
 
             // Invalidate the options menu, so the "Delete" menu option can be hidden.
-            // (It doesn't make sense to delete a pet that hasn't been created yet.)
+            // (It doesn't make sense to delete a book that hasn't been created yet.)
             invalidateOptionsMenu();
         } else {
-            // Otherwise this is an existing pet, so change app bar to say "Edit Pet"
+            // Otherwise this is an existing book, so change app bar to say "Edit Pet"
             setTitle(getString(R.string.editor_activity_title_edit_book));
 
-            // Initialize a loader to read the pet data from the database
+            // Initialize a loader to read the book data from the database
             // and display the current values in the editor
             getLoaderManager().initLoader(EXISTING_BOOK_LOADER, null, this);
         }
@@ -111,6 +127,8 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText = (EditText) findViewById(R.id.edit_name);
         mPriceEditText = (EditText) findViewById(R.id.edit_price);
         mQuantityEditText = (EditText) findViewById(R.id.edit_quantity);
+        mSupplierNameEditText = (EditText) findViewById(R.id.edit_supplier_name);
+        mSupplierPhoneNumberEditText = (EditText) findViewById(R.id.edit_supplier_phone);
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -118,78 +136,129 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mQuantityEditText.setOnTouchListener(mTouchListener);
-
+        mSupplierNameEditText.setOnTouchListener(mTouchListener);
+        mSupplierPhoneNumberEditText.setOnTouchListener(mTouchListener);
     }
 
 
     /**
-     * Get user input from editor and save pet into database.
+     * Get user input from editor and save book into database.
      */
-    private void saveBook() {
+    private boolean saveBook() {
+
+        boolean isSaveSuccessful = true;
+        String toastText = "The following data is mandatory, or contains wrong value: ";
+
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
-        String ProductNameString = mNameEditText.getText().toString().trim();
-        String ProductPriceString = mPriceEditText.getText().toString().trim();
-        String ProductQuantityString = mQuantityEditText.getText().toString().trim();
+        String name = mNameEditText.getText().toString().trim();
+        String priceString = mPriceEditText.getText().toString().trim();
+        String quantityString = mQuantityEditText.getText().toString().trim();
+        String supplierName = mSupplierNameEditText.getText().toString().trim();
+        String supplierPhoneNumber = mSupplierPhoneNumberEditText.getText().toString().trim();
 
-        // Check if this is supposed to be a new pet
-        // and check if all the fields in the editor are blank
-        if (mCurrentBookUri == null &&
-                TextUtils.isEmpty(ProductNameString) && TextUtils.isEmpty(ProductPriceString) &&
-                TextUtils.isEmpty(ProductQuantityString)) {
-            // Since no fields were modified, we can return early without creating a new pet.
-            // No need to create ContentValues and no need to do any ContentProvider operations.
-            return;
-        }
-
-        // Create a ContentValues object where column names are the keys,
-        // and pet attributes from the editor are the values.
-        ContentValues values = new ContentValues();
-        values.put(BookContract.BookEntry.COLUMN_NAME, ProductNameString);
-        values.put(BookContract.BookEntry.COLUMN_PRICE, ProductPriceString);
+        // If the price is not provided by the user, don't try to parse the string into an
+        // integer value. Use 0 by default.
+        int price = 0;
 
         // If the quantity is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
         int quantity = 0;
-        if (!TextUtils.isEmpty(ProductQuantityString)) {
-            quantity = Integer.parseInt(ProductQuantityString);
+
+        //Check field values
+        if (TextUtils.isEmpty(name)) {
+            toastText += "\nName";
+            isSaveSuccessful = false;
         }
-        values.put(BookContract.BookEntry.COLUMN_QUANTITY, quantity);
 
-        // Determine if this is a new or existing pet by checking if mCurrentBookUri is null or not
-        if (mCurrentBookUri == null) {
-            // This is a NEW pet, so insert a new pet into the provider,
-            // returning the content URI for the new pet.
-            Uri newUri = getContentResolver().insert(BookContract.BookEntry.CONTENT_URI, values);
-
-            // Show a toast message depending on whether or not the insertion was successful.
-            if (newUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, getString(R.string.editor_insert_book_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_book_successful),
-                        Toast.LENGTH_SHORT).show();
-            }
+        if (TextUtils.isEmpty(priceString)) {
+            toastText += "\nPrice";
+            isSaveSuccessful = false;
         } else {
-            // Otherwise this is an EXISTING pet, so update the pet with content URI: mCurrentBookUri
-            // and pass in the new ContentValues. Pass in null for the selection and selection args
-            // because mCurrentBookUri will already identify the correct row in the database that
-            // we want to modify.
-            int rowsAffected = getContentResolver().update(mCurrentBookUri, values, null, null);
+            try {
+                price = Integer.parseInt(priceString);
+                if (price < 0) {
+                    toastText += "\nPrice should be positive value";
+                    isSaveSuccessful = false;
+                }
+            } catch (NumberFormatException ex) {
+                toastText += "\nPrice should be an integer value";
+                isSaveSuccessful = false;
+            }
 
-            // Show a toast message depending on whether or not the update was successful.
-            if (rowsAffected == 0) {
-                // If no rows were affected, then there was an error with the update.
-                Toast.makeText(this, getString(R.string.editor_update_book_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the update was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_update_book_successful),
-                        Toast.LENGTH_SHORT).show();
+        }
+        if (TextUtils.isEmpty(quantityString)) {
+            toastText += "\nQuantity";
+            isSaveSuccessful = false;
+        } else {
+            try {
+                quantity = Integer.parseInt(quantityString);
+                if (quantity < 0) {
+                    toastText += "\nQuantity should be positive value";
+                    isSaveSuccessful = false;
+                }
+            } catch (NumberFormatException ex) {
+                toastText += "\nQuantity should be an integer value";
+                isSaveSuccessful = false;
             }
         }
+        if (TextUtils.isEmpty(supplierName)) {
+            toastText += "\nSupplier name";
+            isSaveSuccessful = false;
+        }
+        if (TextUtils.isEmpty(supplierPhoneNumber)) {
+            toastText += "\nSupplier phone number";
+            isSaveSuccessful = false;
+        }
+
+        if (isSaveSuccessful == true) {
+            // Create a ContentValues object where column names are the keys,
+            // and book attributes from the editor are the values.
+            ContentValues values = new ContentValues();
+            values.put(BookContract.BookEntry.COLUMN_NAME, name);
+            values.put(BookContract.BookEntry.COLUMN_PRICE, price);
+            values.put(BookContract.BookEntry.COLUMN_QUANTITY, quantity);
+            values.put(BookContract.BookEntry.COLUMN_SUPPLIER_NAME, supplierName);
+            values.put(BookContract.BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneNumber);
+
+
+            // Determine if this is a new or existing book by checking if mCurrentBookUri is null or not
+            if (mCurrentBookUri == null) {
+                // This is a NEW book, so insert a new book into the provider,
+                // returning the content URI for the new book.
+                Uri newUri = getContentResolver().insert(BookContract.BookEntry.CONTENT_URI, values);
+
+                // Show a toast message depending on whether or not the insertion was successful.
+                if (newUri == null) {
+                    // If the new content URI is null, then there was an error with insertion.
+                    toastText = getString(R.string.editor_insert_book_failed);
+                    isSaveSuccessful = false;
+                } else {
+                    // Otherwise, the insertion was successful and we can display a toast.
+                    toastText = getString(R.string.editor_insert_book_successful);
+                    isSaveSuccessful = true;
+                }
+            } else {
+                // Otherwise this is an EXISTING book, so update the book with content URI: mCurrentBookUri
+                // and pass in the new ContentValues. Pass in null for the selection and selection args
+                // because mCurrentBookUri will already identify the correct row in the database that
+                // we want to modify.
+                int rowsAffected = getContentResolver().update(mCurrentBookUri, values, null, null);
+
+                // toast message depending on whether or not the update was successful.
+                if (rowsAffected == 0) {
+                    // If no rows were affected, then there was an error with the update.
+                    toastText = getString(R.string.editor_update_book_failed);
+                    isSaveSuccessful = false;
+                } else {
+                    // Otherwise, the update was successful.
+                    toastText = getString(R.string.editor_update_book_successful);
+                    isSaveSuccessful = true;
+                }
+            }
+        }
+        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+        return isSaveSuccessful;
     }
 
     @Override
@@ -207,11 +276,13 @@ public class EditorActivity extends AppCompatActivity implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        // If this is a new pet, hide the "Delete" menu item.
+        // If this is a new book, hide the "Delete" menu item.
         if (mCurrentBookUri == null) {
             MenuItem menuItem = menu.findItem(R.id.action_delete);
             menuItem.setVisible(false);
         }
+        MenuItem menuItem = menu.findItem(R.id.action_save);
+        menuItem.setVisible(true);
         return true;
     }
 
@@ -221,10 +292,11 @@ public class EditorActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Save pet to database
-                saveBook();
-                // Exit activity
-                finish();
+                // Save book to database
+                if (saveBook() == true) {
+                    // Exit activity
+                    finish();
+                }
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -233,7 +305,7 @@ public class EditorActivity extends AppCompatActivity implements
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
-                // If the pet hasn't changed, continue with navigating up to parent activity
+                // If the book hasn't changed, continue with navigating up to parent activity
                 // which is the {@link CatalogActivity}.
                 if (!mBookHasChanged) {
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
@@ -264,7 +336,7 @@ public class EditorActivity extends AppCompatActivity implements
      */
     @Override
     public void onBackPressed() {
-        // If the pet hasn't changed, continue with handling back button press
+        // If the book hasn't changed, continue with handling back button press
         if (!mBookHasChanged) {
             super.onBackPressed();
             return;
@@ -287,8 +359,8 @@ public class EditorActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        // Since the editor shows all pet attributes, define a projection that contains
-        // all columns from the pet table
+        // Since the editor shows all book attributes, define a projection that contains
+        // all columns from the book table
         String[] projection = {
                 BookContract.BookEntry._ID,
                 BookContract.BookEntry.COLUMN_NAME,
@@ -299,7 +371,7 @@ public class EditorActivity extends AppCompatActivity implements
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
-                mCurrentBookUri,         // Query the content URI for the current pet
+                mCurrentBookUri,         // Query the content URI for the current book
                 projection,             // Columns to include in the resulting Cursor
                 null,                   // No selection clause
                 null,                   // No selection arguments
@@ -316,24 +388,26 @@ public class EditorActivity extends AppCompatActivity implements
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
-            // Find the columns of pet attributes that we're interested in
+            // Find the columns of book attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_NAME);
-            int breedColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_PRICE);
-            int genderColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_QUANTITY);
-            int weightColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_SUPPLIER_NAME);
+            int priceColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_PRICE);
+            int quantityColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_QUANTITY);
+            int supplierNameColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_SUPPLIER_NAME);
+            int supplierPhoneNumberColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
-            String breed = cursor.getString(breedColumnIndex);
-            int gender = cursor.getInt(genderColumnIndex);
-            int weight = cursor.getInt(weightColumnIndex);
+            int price = cursor.getInt(priceColumnIndex);
+            int quantity = cursor.getInt(quantityColumnIndex);
+            String supplierName = cursor.getString(supplierNameColumnIndex);
+            String supplierPhoneNumber = cursor.getString(supplierPhoneNumberColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
-            mPriceEditText.setText(breed);
-            mQuantityEditText.setText(Integer.toString(weight));
-
-
+            mPriceEditText.setText(Integer.toString(price));
+            mQuantityEditText.setText(Integer.toString(quantity));
+            mSupplierNameEditText.setText(supplierName);
+            mSupplierPhoneNumberEditText.setText(supplierPhoneNumber);
         }
     }
 
@@ -343,7 +417,8 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText.setText("");
         mPriceEditText.setText("");
         mQuantityEditText.setText("");
-
+        mSupplierNameEditText.setText("");
+        mSupplierPhoneNumberEditText.setText("");
     }
 
     /**
@@ -363,7 +438,7 @@ public class EditorActivity extends AppCompatActivity implements
         builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing the book.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -376,7 +451,7 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     /**
-     * Prompt the user to confirm that they want to delete this pet.
+     * Prompt the user to confirm that they want to delete this book.
      */
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
@@ -385,14 +460,14 @@ public class EditorActivity extends AppCompatActivity implements
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the pet.
-                deletePet();
+                // User clicked the "Delete" button, so delete the book.
+                deleteBook();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing the book.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -405,14 +480,14 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     /**
-     * Perform the deletion of the pet in the database.
+     * Perform the deletion of the book in the database.
      */
-    private void deletePet() {
-        // Only perform the delete if this is an existing pet.
+    private void deleteBook() {
+        // Only perform the delete if this is an existing book.
         if (mCurrentBookUri != null) {
-            // Call the ContentResolver to delete the pet at the given content URI.
+            // Call the ContentResolver to delete the book at the given content URI.
             // Pass in null for the selection and selection args because the mCurrentBookUri
-            // content URI already identifies the pet that we want.
+            // content URI already identifies the book that we want.
             int rowsDeleted = getContentResolver().delete(mCurrentBookUri, null, null);
 
             // Show a toast message depending on whether or not the delete was successful.

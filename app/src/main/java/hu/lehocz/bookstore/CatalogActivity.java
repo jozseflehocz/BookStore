@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import hu.lehocz.bookstore.data.BookContract;
 import hu.lehocz.bookstore.data.BookContract.BookEntry;
 
 /**
@@ -59,18 +60,18 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        ListView bookListView=(ListView)findViewById(R.id.list);
+        final ListView bookListView=(ListView)findViewById(R.id.list);
+        
         View emptyView=(findViewById(R.id.empty_View));
         bookListView.setEmptyView(emptyView);
-
         mCursorAdapter= new BookCursorAdapter(this,null);
         bookListView.setAdapter(mCursorAdapter);
-
         bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent=new Intent(CatalogActivity.this,EditorActivity.class);
-                Uri currentBookUri= ContentUris.withAppendedId(BookEntry.CONTENT_URI,id);
+                //Intent intent=new Intent(CatalogActivity.this,EditorActivity.class);
+                Intent intent=new Intent(CatalogActivity.this,DetailsActivity.class);
+                Uri currentBookUri= ContentUris.withAppendedId(BookEntry.CONTENT_URI,id);                
                 intent.setData(currentBookUri);
                 startActivity(intent);
             }

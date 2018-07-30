@@ -114,6 +114,7 @@ public class DetailsActivity extends AppCompatActivity implements
     /**
      * This method is called after invalidateOptionsMenu(), so that the
      * menu can be updated (some menu items can be hidden or made visible).
+     * 
      */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
