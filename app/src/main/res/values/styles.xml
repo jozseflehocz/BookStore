@@ -19,4 +19,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="horizontal_two_columns_layout">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:weightSum">8</item>
+    </style>
+
+    <style name="column_label">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="column_data">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 </resources>

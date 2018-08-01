@@ -18,7 +18,6 @@ package hu.lehocz.bookstore;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -32,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import hu.lehocz.bookstore.data.BookContract;
-import hu.lehocz.bookstore.data.BookProvider;
 
 import static android.support.v4.content.ContextCompat.startActivity;
 
@@ -81,21 +79,21 @@ public class BookCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
         // Find individual views that we want to modify in the list item layout
-        TextView nameTextView = (TextView) view.findViewById(R.id.name);
-        TextView priceTextView = (TextView) view.findViewById(R.id.price);
-        final TextView quantityTextView = (TextView) view.findViewById(R.id.quantity);
+        TextView nameTextView = view.findViewById(R.id.name);
+        TextView priceTextView = view.findViewById(R.id.price);
+        final TextView quantityTextView = view.findViewById(R.id.quantity);
 
         // Find the columns of book attributes that we're interested in
-        int idColumnIndex =cursor.getColumnIndex(BookContract.BookEntry._ID);
+        int idColumnIndex = cursor.getColumnIndex(BookContract.BookEntry._ID);
         int nameColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_NAME);
         int priceColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_QUANTITY);
 
-        // Read the pet attributes from the Cursor for the current pet
+        // Read the book attributes from the Cursor for the current book
         String bookName = cursor.getString(nameColumnIndex);
         int bookPrice = cursor.getInt(priceColumnIndex);
 
-        // If the pet breed is empty string or null, then use some default text
+        // If the book name is empty string or null, then use some default text
         // that says "Unknown breed", so the TextView isn't blank.
         if (TextUtils.isEmpty(bookName)) {
             bookName = context.getString(R.string.unknown_book);
@@ -103,20 +101,28 @@ public class BookCursorAdapter extends CursorAdapter {
 
         int bookQuantity = cursor.getInt(quantityColumnIndex);
 
-        // Update the TextViews with the attributes for the current pet
+        // Update the TextViews with the attributes for the current book
         nameTextView.setText(bookName);
         priceTextView.setText(Integer.toString(bookPrice));
         quantityTextView.setText(Integer.toString(bookQuantity));
 
-        final long bookId=cursor.getInt(idColumnIndex);
+        final long bookId = cursor.getInt(idColumnIndex);
 
-        LinearLayout quantityLayout=(LinearLayout)view.findViewById(R.id.quantity_layout);
-        Button saleButton=(Button)view.findViewById(R.id.sale_button);
-        TextView outOfStockView=(TextView)view.findViewById(R.id.out_of_stock);
-        if (bookQuantity>0) {
-            quantityLayout.setVisibility(view.VISIBLE);
-            saleButton.setVisibility(view.VISIBLE);
-            outOfStockView.setVisibility(view.GONE);
+        LinearLayout quantityLayout = view.findViewById(R.id.quantity_layout);
+
+        /* Sale Button
+         * In the Main Activity that displays a list of all available inventory,
+         * each List Item contains a Sale Button which reduces the available quantity
+         * for that particular product by one (include logic so
+         * that no negative quantities are displayed).
+         */
+
+        Button saleButton = view.findViewById(R.id.sale_button);
+        TextView outOfStockView = view.findViewById(R.id.out_of_stock);
+        if (bookQuantity > 0) {
+            quantityLayout.setVisibility(View.VISIBLE);
+            saleButton.setVisibility(View.VISIBLE);
+            outOfStockView.setVisibility(View.GONE);
             saleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -125,13 +131,12 @@ public class BookCursorAdapter extends CursorAdapter {
                     int quantity = Integer.parseInt(quantityString);
                     values.put(BookContract.BookEntry.COLUMN_QUANTITY, quantity - 1);
                     Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, bookId);
-                    //Log.i("saleclick",currentBookUri.getPath());
-                    int rowsAffected = context.getContentResolver().update(currentBookUri, values, null, null);
+                    context.getContentResolver().update(currentBookUri, values, null, null);
                 }
             });
-        }else{
-            saleButton.setVisibility(view.GONE);
-            quantityLayout.setVisibility(view.GONE);
+        } else {
+            saleButton.setVisibility(View.GONE);
+            quantityLayout.setVisibility(View.GONE);
             outOfStockView.setVisibility(View.VISIBLE);
         }
     }

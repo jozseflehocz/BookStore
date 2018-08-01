@@ -9,7 +9,9 @@ import hu.lehocz.bookstore.data.BookContract.BookEntry;
 public class BookDbHelper extends SQLiteOpenHelper {
     public static final String LOG_TAG = BookDbHelper.class.getSimpleName();
 
-    /** Name of the database file */
+    /**
+     * Name of the database file
+     */
     private static final String DATABASE_NAME = "bookstore.db";
 
     /**
@@ -32,7 +34,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create a String that contains the SQL statement to create the books table
-        String sqlCreateBooksTable =  "CREATE TABLE " + BookEntry.TABLE_NAME + " ("
+        String sqlCreateBooksTable = "CREATE TABLE " + BookEntry.TABLE_NAME + " ("
                 + BookEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + BookEntry.COLUMN_NAME + " TEXT NOT NULL, "
                 + BookEntry.COLUMN_PRICE + "  INTEGER NOT NULL DEFAULT 0, "

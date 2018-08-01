@@ -19,7 +19,7 @@
     <string name="unsaved_changes_dialog_msg">Unsaved changes</string>
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep editing</string>
-    <string name="delete_dialog_msg">Delete dialog msg</string>
+    <string name="delete_dialog_msg">Delete item. Continue?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="editor_delete_book_failed">Delete book failed</string>
@@ -27,7 +27,6 @@
     <string name="unknown_book">Unknown book</string>
     <string name="action_insert_dummy_data">Insert Dummy Data</string>
     <string name="details_activity_book_details">Book Details</string>
-    <string name="title">Title</string>
     <string name="price">Price</string>
     <string name="quantity">Quantity</string>
     <string name="supplier_name">Supplier Name</string>
@@ -36,4 +35,19 @@
     <string name="out_of_stock">Out of stock</string>
     <string name="edit_button">Edit</string>
     <string name="action_edit">Edit</string>
+    <string name="modify_quantity">Modify quatity</string>
+    <string name="title">Title</string>
+    <string name="wrong_quantity">Wrong quantity:</string>
+    <string name="quantity_should_be_integer">Quantity should be an integer value</string>
+    <string name="quantity_successfully_increased">Quantity successfully increased</string>
+    <string name="quantity_successfully_decreased">Quantity successfully decreased</string>
+    <string name="quantity_can_not_be_negative">Quantity can not be decreased to negative value</string>
+    <string name="order_button">Order</string>
+    <string name="decrease_button">Decrease</string>
+    <string name="increase_button">Increase</string>
+    <string name="use_button_or_menu_insert_dummy_data_to_add_data_n_every_fields_are_mandatory">Use + button, or menu Insert dummy data to add data.\nEvery fields are mandatory.</string>
+    <string name="enter_title_of_the_book_mandatory">Enter title of the book. Mandatory</string>
+    <string name="enter_an_integer_mandatory">Enter an integer. Mandatory</string>
+    <string name="name_of_the_supplier_mandatory">Name of the supplier. Mandatory</string>
+    <string name="phone_of_the_supplier_mandatory">Phone of the supplier. Mandatory.</string>
 </resources>

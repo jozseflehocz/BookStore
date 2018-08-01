@@ -124,11 +124,11 @@ public class EditorActivity extends AppCompatActivity implements
         }
 
         // Find all relevant views that we will need to read user input from
-        mNameEditText = (EditText) findViewById(R.id.edit_name);
-        mPriceEditText = (EditText) findViewById(R.id.edit_price);
-        mQuantityEditText = (EditText) findViewById(R.id.edit_quantity);
-        mSupplierNameEditText = (EditText) findViewById(R.id.edit_supplier_name);
-        mSupplierPhoneNumberEditText = (EditText) findViewById(R.id.edit_supplier_phone);
+        mNameEditText = findViewById(R.id.edit_name);
+        mPriceEditText = findViewById(R.id.edit_price);
+        mQuantityEditText = findViewById(R.id.edit_quantity);
+        mSupplierNameEditText = findViewById(R.id.edit_supplier_name);
+        mSupplierPhoneNumberEditText = findViewById(R.id.edit_supplier_phone);
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -165,7 +165,14 @@ public class EditorActivity extends AppCompatActivity implements
         // integer value. Use 0 by default.
         int quantity = 0;
 
-        //Check field values
+        /* Input Validation
+         * In the Edit Product Activity, user input is validated. In particular, empty product
+         * information is not accepted. If user inputs invalid product information (name, price,
+         * quantity, supplier name, supplier phone number), instead of erroring out, the app
+         * includes logic to validate that no null values are accepted. If a null value is inputted,
+         * add a Toast that prompts the user to input the correct information before they can continue.
+         */
+
         if (TextUtils.isEmpty(name)) {
             toastText += "\nName";
             isSaveSuccessful = false;
@@ -211,7 +218,7 @@ public class EditorActivity extends AppCompatActivity implements
             isSaveSuccessful = false;
         }
 
-        if (isSaveSuccessful == true) {
+        if (isSaveSuccessful) {
             // Create a ContentValues object where column names are the keys,
             // and book attributes from the editor are the values.
             ContentValues values = new ContentValues();
@@ -277,10 +284,6 @@ public class EditorActivity extends AppCompatActivity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         // If this is a new book, hide the "Delete" menu item.
-        if (mCurrentBookUri == null) {
-            MenuItem menuItem = menu.findItem(R.id.action_delete);
-            menuItem.setVisible(false);
-        }
         MenuItem menuItem = menu.findItem(R.id.action_save);
         menuItem.setVisible(true);
         return true;
@@ -293,17 +296,11 @@ public class EditorActivity extends AppCompatActivity implements
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Save book to database
-                if (saveBook() == true) {
+                if (saveBook()) {
                     // Exit activity
                     finish();
                 }
                 return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
-                // Pop up confirmation dialog for deletion
-                showDeleteConfirmationDialog();
-                return true;
-            // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 // If the book hasn't changed, continue with navigating up to parent activity
                 // which is the {@link CatalogActivity}.
@@ -448,61 +445,5 @@ public class EditorActivity extends AppCompatActivity implements
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-    }
-
-    /**
-     * Prompt the user to confirm that they want to delete this book.
-     */
-    private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the postivie and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_dialog_msg);
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the book.
-                deleteBook();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the book.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    /**
-     * Perform the deletion of the book in the database.
-     */
-    private void deleteBook() {
-        // Only perform the delete if this is an existing book.
-        if (mCurrentBookUri != null) {
-            // Call the ContentResolver to delete the book at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentBookUri
-            // content URI already identifies the book that we want.
-            int rowsDeleted = getContentResolver().delete(mCurrentBookUri, null, null);
-
-            // Show a toast message depending on whether or not the delete was successful.
-            if (rowsDeleted == 0) {
-                // If no rows were deleted, then there was an error with the delete.
-                Toast.makeText(this, getString(R.string.editor_delete_book_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the delete was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_delete_book_successful),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        // Close the activity
-        finish();
     }
 }

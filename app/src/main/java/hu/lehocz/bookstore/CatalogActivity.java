@@ -26,7 +26,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,11 +33,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import hu.lehocz.bookstore.data.BookContract;
 import hu.lehocz.bookstore.data.BookContract.BookEntry;
 
 /**
- * Displays list of pets that were entered and stored in the app.
+ * Displays list of books that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -50,8 +48,11 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
 
-        // Setup FAB to open EditorActivity
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /* Add Product Button
+         * The Main Activity contains an Add Product Button prompts the user for product
+         * information and supplier information which are then properly stored in the table.
+         */
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,56 +61,52 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        final ListView bookListView=(ListView)findViewById(R.id.list);
-        
-        View emptyView=(findViewById(R.id.empty_View));
+        /*
+         * ListView Population
+         * The Main Activity displaying the list of current inventory contains a ListView
+         * that populates with the current products stored in the table.
+         */
+
+        final ListView bookListView = findViewById(R.id.list);
+
+        View emptyView = (findViewById(R.id.empty_View));
         bookListView.setEmptyView(emptyView);
-        mCursorAdapter= new BookCursorAdapter(this,null);
+        mCursorAdapter = new BookCursorAdapter(this, null);
         bookListView.setAdapter(mCursorAdapter);
         bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //Intent intent=new Intent(CatalogActivity.this,EditorActivity.class);
-                Intent intent=new Intent(CatalogActivity.this,DetailsActivity.class);
-                Uri currentBookUri= ContentUris.withAppendedId(BookEntry.CONTENT_URI,id);                
+
+                /* Detail View Intent
+                 * When a user clicks on a List Item from the Main Activity,
+                 * it opens up the detail screen for the correct product.
+                 */
+                Intent intent = new Intent(CatalogActivity.this, DetailsActivity.class);
+                Uri currentBookUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, id);
                 intent.setData(currentBookUri);
                 startActivity(intent);
             }
         });
 
         //Kick off the loader
-        getLoaderManager().initLoader(BOOK_LOADER,null,this);
+        getLoaderManager().initLoader(BOOK_LOADER, null, this);
     }
 
     /**
      * Helper method to insert hardcoded book data into the database. For debugging purposes only.
      */
     private void insertBook() {
-        // Gets the database in write mode
-        //SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a ContentValues object where column names are the keys,
-        // and Toto's pet attributes are the values.
+        // and book attributes are the values.
         ContentValues values = new ContentValues();
         values.put(BookEntry.COLUMN_NAME, "Star Wars");
         values.put(BookEntry.COLUMN_PRICE, 10);
         values.put(BookEntry.COLUMN_QUANTITY, 1);
         values.put(BookEntry.COLUMN_SUPPLIER_NAME, "HVG");
-        values.put(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER,"0036201111111");
+        values.put(BookEntry.COLUMN_SUPPLIER_PHONE_NUMBER, "0036201111111");
 
-        // Insert a new row for Toto in the database, returning the ID of that new row.
-        // The first argument for db.insert() is the pets table name.
-        // The second argument provides the name of a column in which the framework
-        // can insert NULL in the event that the ContentValues is empty (if
-        // this is set to "null", then the framework will not insert a row when
-        // there are no values).
-        // The third argument is the ContentValues object containing the info for Toto.
-        /*long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);*/
-        // Insert a new row for Toto into the provider using the ContentResolver.
-        // Use the {@link PetEntry#CONTENT_URI} to indicate that we want to insert
-        // into the pets database table.
-        // Receive the new content URI that will allow us to access Toto's data in the future.
-        Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
+        getContentResolver().insert(BookEntry.CONTENT_URI, values);
     }
 
     @Override
@@ -137,11 +134,10 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     }
 
     /**
-     * Helper method to delete all pets in the database.
+     * Helper method to delete all books in the database.
      */
     private void deleteAllBooks() {
-        int rowsDeleted = getContentResolver().delete(BookEntry.CONTENT_URI, null, null);
-        Log.v("CatalogActivity", rowsDeleted + " rows deleted from book database");
+        getContentResolver().delete(BookEntry.CONTENT_URI, null, null);
     }
 
     @Override
