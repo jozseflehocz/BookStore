@@ -35,7 +35,7 @@
     <string name="out_of_stock">Out of stock</string>
     <string name="edit_button">Edit</string>
     <string name="action_edit">Edit</string>
-    <string name="modify_quantity">Modify quatity</string>
+    <string name="modify_quantity">Modify quantity</string>
     <string name="title">Title</string>
     <string name="wrong_quantity">Wrong quantity:</string>
     <string name="quantity_should_be_integer">Quantity should be an integer value</string>
