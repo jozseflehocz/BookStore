@@ -359,35 +359,41 @@ public class DetailsActivity extends AppCompatActivity implements
 
             String toastText;
 
-            quantity = Integer.parseInt(quantityString);
-            modifyQuantity = Integer.parseInt((modifyQuantityString));
-            if (isIncrease) {
-                quantity += modifyQuantity;
-            } else {
-                quantity += -modifyQuantity;
-            }
+            if (modifyQuantityString.isEmpty()){
+                toastText = getString(R.string.empty_modify_quantity);
+                Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+            }else {
+
+                quantity = Integer.parseInt(quantityString);
+                modifyQuantity = Integer.parseInt((modifyQuantityString));
+                if (isIncrease) {
+                    quantity += modifyQuantity;
+                } else {
+                    quantity += -modifyQuantity;
+                }
 
 
-            /*
-             * Add a check in the code to ensure that
-             * no negative quantities display (zero is the lowest amount).
-             */
+                /*
+                 * Add a check in the code to ensure that
+                 * no negative quantities display (zero is the lowest amount).
+                 */
 
-            if (quantity > -1) {
-                ContentValues values = new ContentValues();
-                values.put(BookContract.BookEntry.COLUMN_QUANTITY, quantity);
-                int rowsUpdated = getContentResolver().update(mCurrentBookUri, values, null, null);
-                if (rowsUpdated > 0 && modifyQuantity > 0) {
-                    if (isIncrease) {
-                        toastText = getString(R.string.quantity_successfully_increased);
-                    } else {
-                        toastText = getString(R.string.quantity_successfully_decreased);
+                if (quantity > -1) {
+                    ContentValues values = new ContentValues();
+                    values.put(BookContract.BookEntry.COLUMN_QUANTITY, quantity);
+                    int rowsUpdated = getContentResolver().update(mCurrentBookUri, values, null, null);
+                    if (rowsUpdated > 0 && modifyQuantity > 0) {
+                        if (isIncrease) {
+                            toastText = getString(R.string.quantity_successfully_increased);
+                        } else {
+                            toastText = getString(R.string.quantity_successfully_decreased);
+                        }
+                        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    toastText = getString(R.string.quantity_can_not_be_negative);
                     Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                toastText = getString(R.string.quantity_can_not_be_negative);
-                Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
             }
         }
     }
