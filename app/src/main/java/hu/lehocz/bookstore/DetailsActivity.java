@@ -54,29 +54,34 @@ public class DetailsActivity extends AppCompatActivity implements
     private Uri mCurrentBookUri;
 
     /**
-     * EditText field to enter the book name
+     * TextView for the book name
      */
     private TextView mName;
 
     /**
-     * EditText field to enter the book price
+     * TextView for the book price
      */
     private TextView mPrice;
 
     /**
-     * EditText field to enter the book quantity
+     * TextView for the book quantity
      */
     private TextView mQuantity;
 
     /**
-     * EditText field to enter the supplier name
+     * TextView for the supplier name
      */
     private TextView mSupplierName;
 
     /**
-     * EditText field to enter the supplier phone number
+     * TextView for the supplier phone number
      */
     private TextView mSupplierPhoneNumber;
+
+    /**
+     * Edittext for modify quantity
+     */
+    private EditText mModifyQuantity;
 
 
     @Override
@@ -113,6 +118,8 @@ public class DetailsActivity extends AppCompatActivity implements
         mQuantity = findViewById(R.id.quantity);
         mSupplierName = findViewById(R.id.supplier_name);
         mSupplierPhoneNumber = findViewById(R.id.supplier_phone);
+        mModifyQuantity=findViewById(R.id.modify_quantity_input);
+
 
         Button increaseButton = findViewById(R.id.increase_quantity_button);
         increaseButton.setOnClickListener(new View.OnClickListener() {
@@ -263,8 +270,7 @@ public class DetailsActivity extends AppCompatActivity implements
             mQuantity.setText(Integer.toString(quantity));
             mSupplierName.setText(supplierName);
             mSupplierPhoneNumber.setText(supplierPhoneNumber);
-
-
+            mModifyQuantity.setText(R.string.modify_quantity_default);
         }
     }
 

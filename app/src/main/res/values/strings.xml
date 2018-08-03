@@ -51,4 +51,5 @@
     <string name="name_of_the_supplier_mandatory">Name of the supplier. Mandatory</string>
     <string name="phone_of_the_supplier_mandatory">Phone of the supplier. Mandatory.</string>
     <string name="empty_modify_quantity">Modify quantity should not be empty</string>
+    <string name="modify_quantity_default">1</string>
 </resources>
